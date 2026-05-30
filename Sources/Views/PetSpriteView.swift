@@ -59,6 +59,8 @@ struct ClawdSprite: View {
         return pixels
     }()
 
+    @State private var thinkingRotation: Double = 0
+
     private static let eyePositions: [(Int, Int)] = [(5,1), (12,1)]
 
     private func eyePositions(for state: PetState, frame: Int) -> [(Int, Int)] {
@@ -80,9 +82,26 @@ struct ClawdSprite: View {
             bodyCanvas
                 .scaleEffect(bodyScale)
                 .offset(x: bodyOffsetX, y: bodyOffsetY)
-                .rotationEffect(bodyRotation)
+                .rotationEffect(.degrees(state == .thinking ? thinkingRotation : 0))
                 .shadow(color: shadowColor, radius: shadowRadius)
             foregroundEffect
+        }
+        .onAppear {
+            if state == .thinking { startThinkingRotation() }
+        }
+        .onChange(of: state) { newState in
+            if newState == .thinking {
+                startThinkingRotation()
+            } else {
+                thinkingRotation = 0
+            }
+        }
+    }
+
+    private func startThinkingRotation() {
+        thinkingRotation = 0
+        withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
+            thinkingRotation = 360
         }
     }
 
@@ -137,10 +156,10 @@ struct ClawdSprite: View {
                 .stroke(Color(red: 0.3, green: 0.3, blue: 0.85).opacity(0.4), lineWidth: 2)
                 .frame(width: 55, height: 55)
                 .rotationEffect(.degrees(Double(frame) * 90))
-        case .building:
+        case .idle:
             ForEach(0..<6, id: \.self) { i in
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(Color(red: 0.9, green: 0.4, blue: 0.2).opacity(0.4))
+                    .fill(Color(red: 0.4, green: 0.65, blue: 0.95).opacity(0.35))
                     .frame(width: 3, height: 8)
                     .offset(y: -28)
                     .rotationEffect(.degrees(Double(i) * 60 + Double(frame) * 15))
@@ -178,9 +197,10 @@ struct ClawdSprite: View {
             }
         case .attention:
             Circle()
-                .stroke(Color.red.opacity(0.4 + (1.0 - Double(frame % 12) / 12.0) * 0.5), lineWidth: 2)
-                .frame(width: 45 + CGFloat(Double(frame % 12) / 12.0) * 15,
-                       height: 45 + CGFloat(Double(frame % 12) / 12.0) * 15)
+                .trim(from: 0, to: 0.35)
+                .stroke(Color.red.opacity(0.75), style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                .frame(width: 52, height: 52)
+                .rotationEffect(.degrees(Double(frame) * 30))
         default:
             EmptyView()
         }
@@ -234,19 +254,13 @@ struct ClawdSprite: View {
         }
     }
     private var bodyOffsetX: CGFloat {
-        switch state {
-        case .error:
-            let s = frame % 3
-            return s == 0 ? -5 : s == 1 ? 5 : 0
-        case .thinking:
-            return sinVal(Double(frame) * .pi / 3) * 3
-        default: return 0
-        }
+        guard state == .error else { return 0 }
+        let s = frame % 3
+        return s == 0 ? -5 : s == 1 ? 5 : 0
     }
     private var bodyOffsetY: CGFloat {
         state == .celebrate ? -abs(sinVal(Double(frame) * .pi / 4)) * 8 : 0
     }
-    private var bodyRotation: Angle { .degrees(0) }
     private var shadowColor: Color {
         state.isUrgent ? .red.opacity(0.6) : colorForState.opacity(0.3)
     }
