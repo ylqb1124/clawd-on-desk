@@ -79,7 +79,7 @@ struct ClawdSprite: View {
             backgroundEffect
             bodyCanvas
                 .scaleEffect(bodyScale)
-                .offset(y: bodyOffsetY)
+                .offset(x: bodyOffsetX, y: bodyOffsetY)
                 .rotationEffect(bodyRotation)
                 .shadow(color: shadowColor, radius: shadowRadius)
             foregroundEffect
@@ -233,13 +233,16 @@ struct ClawdSprite: View {
         default: return 1.0
         }
     }
+    private var bodyOffsetX: CGFloat {
+        guard state == .error else { return 0 }
+        let s = frame % 3
+        return s == 0 ? -5 : s == 1 ? 5 : 0
+    }
     private var bodyOffsetY: CGFloat {
         state == .celebrate ? -abs(sinVal(Double(frame) * .pi / 4)) * 8 : 0
     }
     private var bodyRotation: Angle {
         switch state {
-        case .error:
-            let s = frame % 3; return .degrees(s == 0 ? -5 : s == 1 ? 5 : 0)
         case .thinking:
             return .degrees(Double(sinVal(Double(frame) * .pi / 3) * 3))
         default: return .degrees(0)
