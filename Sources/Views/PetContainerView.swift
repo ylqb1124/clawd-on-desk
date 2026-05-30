@@ -7,22 +7,24 @@ struct PetContainerView: View {
     var body: some View {
         ZStack {
             // Pet body
-            PetSpriteView(
-                state: viewModel.currentState,
-                frame: viewModel.currentFrame
-            )
-            .scaleEffect(viewModel.isMiniMode ? 0.4 : 1.0)
-            .transition(.scale.combined(with: .opacity))
-
-            // Permission bubble
-            if viewModel.showPermissionBubble, let permission = viewModel.pendingPermissions.first {
-                PermissionBubbleView(
-                    permission: permission,
-                    onApprove: { viewModel.approvePermission(permission) },
-                    onDeny: { viewModel.denyPermission(permission) }
+            VStack(spacing: 4) {
+                PetSpriteView(
+                    state: viewModel.currentState,
+                    frame: viewModel.currentFrame
                 )
-                .offset(y: -80)
+                .scaleEffect(viewModel.isMiniMode ? 0.4 : 1.0)
                 .transition(.scale.combined(with: .opacity))
+                .padding(.bottom, -6)
+
+                if !viewModel.isMiniMode {
+                    Text(viewModel.currentState.displayName)
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.85))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.black.opacity(0.35), in: Capsule())
+                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -46,6 +46,11 @@ class StatusBarController {
         miniItem.target = self
         menu.addItem(miniItem)
 
+        // Demo all states
+        let demoItem = NSMenuItem(title: "Demo All States", action: #selector(demoAllStates), keyEquivalent: "")
+        demoItem.target = self
+        menu.addItem(demoItem)
+
         menu.addItem(NSMenuItem.separator())
 
         // Quit
@@ -72,6 +77,15 @@ class StatusBarController {
 
     @objc private func toggleMini() {
         petWindowController.toggleMiniMode()
+    }
+
+    @objc private func demoAllStates() {
+        let states: [PetState] = [.idle, .thinking, .typing, .building, .testing, .installing, .searching, .subAgent, .celebrate, .error, .attention, .sleeping]
+        for (i, state) in states.enumerated() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 2.5) {
+                PetViewModel.shared.transitionTo(state)
+            }
+        }
     }
 
     @objc private func quit() {

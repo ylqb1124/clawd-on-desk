@@ -67,8 +67,6 @@ struct ClawdSprite: View {
             return [(4,1),(5,1),(6,1), (11,1),(12,1),(13,1)]
         case .error:
             return [(4,1),(6,1),(5,2), (11,1),(13,1),(12,2)]
-        case .thinking:
-            return [(5,0),(12,0)]
         default:
             return Self.eyePositions
         }
@@ -136,7 +134,7 @@ struct ClawdSprite: View {
                 .stroke(Color(red: 0.3, green: 0.3, blue: 0.85).opacity(0.4), lineWidth: 2)
                 .frame(width: 55, height: 55)
                 .rotationEffect(.degrees(Double(frame) * 90))
-        case .idle:
+        case .thinking:
             ForEach(0..<6, id: \.self) { i in
                 RoundedRectangle(cornerRadius: 1)
                     .fill(Color(red: 0.9, green: 0.4, blue: 0.2).opacity(0.35))
@@ -144,6 +142,8 @@ struct ClawdSprite: View {
                     .offset(y: -28)
                     .rotationEffect(.degrees(Double(i) * 60 + Double(frame) * 15))
             }
+        case .idle:
+            EmptyView()
         case .installing:
             Circle()
                 .trim(from: 0, to: progressAmount)
@@ -256,7 +256,7 @@ struct ClawdSprite: View {
         switch state {
         case .sleeping:   return Color(red: 0.55, green: 0.55, blue: 0.6)
         case .idle:       return Color(red: 0.9,  green: 0.4,  blue: 0.2)
-        case .thinking:   return Color(red: 0.6,  green: 0.3,  blue: 0.9)
+        case .thinking:   return Color(red: 0.9,  green: 0.4,  blue: 0.2)
         case .typing:     return Color(red: 0.2,  green: 0.8,  blue: 0.4)
         case .building:   return Color(red: 0.4,  green: 0.65, blue: 0.95)
         case .installing: return Color(red: 0.6,  green: 0.35, blue: 0.9)

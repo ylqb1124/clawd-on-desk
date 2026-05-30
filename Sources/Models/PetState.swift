@@ -17,18 +17,18 @@ enum PetState: String, CaseIterable, Codable {
 
     var displayName: String {
         switch self {
-        case .idle: return "Idle"
-        case .thinking: return "Thinking..."
-        case .typing: return "Writing code"
-        case .building: return "Building"
-        case .testing: return "Running tests"
-        case .subAgent: return "Sub-agent active"
-        case .error: return "Error"
-        case .celebrate: return "Done!"
-        case .sleeping: return "Sleeping"
-        case .attention: return "Needs approval"
-        case .searching: return "Searching"
-        case .installing: return "Installing"
+        case .idle: return "空闲"
+        case .thinking: return "思考中.."
+        case .typing: return "编码中.."
+        case .building: return "构建中.."
+        case .testing: return "测试中.."
+        case .subAgent: return "子任务.."
+        case .error: return "出错了"
+        case .celebrate: return "完成！"
+        case .sleeping: return "休眠"
+        case .attention: return "需要授权"
+        case .searching: return "搜索中.."
+        case .installing: return "安装中.."
         }
     }
 
