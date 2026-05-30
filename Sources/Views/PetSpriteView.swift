@@ -159,7 +159,7 @@ struct ClawdSprite: View {
         case .idle:
             ForEach(0..<6, id: \.self) { i in
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(Color(red: 0.4, green: 0.65, blue: 0.95).opacity(0.35))
+                    .fill(Color(red: 0.9, green: 0.4, blue: 0.2).opacity(0.35))
                     .frame(width: 3, height: 8)
                     .offset(y: -28)
                     .rotationEffect(.degrees(Double(i) * 60 + Double(frame) * 15))
@@ -196,11 +196,7 @@ struct ClawdSprite: View {
                             y: -20 - CGFloat(i) * 10 + sinVal(Double(frame + i) * .pi / 2) * 3)
             }
         case .attention:
-            Circle()
-                .trim(from: 0, to: 0.35)
-                .stroke(Color.red.opacity(0.75), style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .frame(width: 52, height: 52)
-                .rotationEffect(.degrees(Double(frame) * 30))
+            EmptyView()
         default:
             EmptyView()
         }
@@ -249,14 +245,18 @@ struct ClawdSprite: View {
         switch state {
         case .sleeping: return 1.0 + sinVal(Double(frame) * .pi / 2) * 0.05
         case .celebrate: return 1.0 + sinVal(Double(frame) * .pi / 4) * 0.1
-        case .attention: return 1.0 + (frame % 2 == 0 ? 0.05 : 0)
         default: return 1.0
         }
     }
     private var bodyOffsetX: CGFloat {
-        guard state == .error else { return 0 }
-        let s = frame % 3
-        return s == 0 ? -5 : s == 1 ? 5 : 0
+        switch state {
+        case .error:
+            let s = frame % 3
+            return s == 0 ? -5 : s == 1 ? 5 : 0
+        case .attention:
+            return sinVal(Double(frame) * .pi / 3) * 10
+        default: return 0
+        }
     }
     private var bodyOffsetY: CGFloat {
         state == .celebrate ? -abs(sinVal(Double(frame) * .pi / 4)) * 8 : 0
@@ -265,11 +265,7 @@ struct ClawdSprite: View {
         state.isUrgent ? .red.opacity(0.6) : colorForState.opacity(0.3)
     }
     private var shadowRadius: CGFloat {
-        switch state {
-        case .attention: return CGFloat(6 + (frame % 2) * 4)
-        case .celebrate: return 10
-        default: return 6
-        }
+        state == .celebrate ? 10 : 6
     }
     private var progressAmount: CGFloat {
         CGFloat(frame) / CGFloat(max(1, PetState.installing.frameCount))
@@ -279,10 +275,10 @@ struct ClawdSprite: View {
     private var colorForState: Color {
         switch state {
         case .sleeping:   return Color(red: 0.55, green: 0.55, blue: 0.6)
-        case .idle:       return Color(red: 0.4,  green: 0.65, blue: 0.95)
+        case .idle:       return Color(red: 0.9,  green: 0.4,  blue: 0.2)
         case .thinking:   return Color(red: 0.95, green: 0.65, blue: 0.15)
         case .typing:     return Color(red: 0.2,  green: 0.8,  blue: 0.4)
-        case .building:   return Color(red: 0.9,  green: 0.4,  blue: 0.2)
+        case .building:   return Color(red: 0.4,  green: 0.65, blue: 0.95)
         case .installing: return Color(red: 0.6,  green: 0.35, blue: 0.9)
         case .testing:    return Color(red: 0.1,  green: 0.8,  blue: 0.75)
         case .error:      return Color(red: 0.9,  green: 0.2,  blue: 0.25)

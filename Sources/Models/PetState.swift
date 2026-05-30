@@ -83,7 +83,7 @@ enum PetState: String, CaseIterable, Codable {
         case .subAgent: return 0.25      // Orbiting clones
         case .error: return 0.35         // Shake
         case .celebrate: return 0.1      // Fast — fireworks
-        case .attention: return 0.5      // Slow pulse — stays visible for interaction
+        case .attention: return 0.15     // Alarm swing
         case .searching: return 0.25     // Radar sweep
         case .installing: return 0.25    // Progress ring
         }
