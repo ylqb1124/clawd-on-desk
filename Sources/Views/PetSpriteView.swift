@@ -266,7 +266,7 @@ struct ClawdSprite: View {
     private var colorForState: Color {
         switch state {
         case .sleeping:   return Color(red: 0.55, green: 0.55, blue: 0.6)
-        case .idle:       return Color(red: 0.85, green: 0.47, blue: 0.34)
+        case .idle:       return Color(red: 0.4,  green: 0.65, blue: 0.95)
         case .thinking:   return Color(red: 0.95, green: 0.65, blue: 0.15)
         case .typing:     return Color(red: 0.2,  green: 0.8,  blue: 0.4)
         case .building:   return Color(red: 0.9,  green: 0.4,  blue: 0.2)
