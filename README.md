@@ -1,8 +1,8 @@
 # ClawdOnDesk 🐾
 
-一个 macOS 原生桌面宠物，实时响应 [Claude Code](https://claude.ai/code) 的工作状态。
+一个 macOS 原生桌面宠物，宠物形象为像素风格机器人 Clawd，实时响应 [Claude Code](https://claude.ai/code) 的工作状态。
 
-当 Claude 在思考时它变橘黄，写代码时变绿色，出错时摇头，完成任务时放烟花 —— 让 AI 编程助手的工作状态一目了然。
+当 Claude 在思考时它变橘黄、写代码时变绿色、出错时摇头、完成任务时放烟花 —— 让 AI 编程助手的工作状态一目了然。
 
 ![macOS 13+](https://img.shields.io/badge/macOS-13%2B-blue)
 ![Swift 5.9](https://img.shields.io/badge/Swift-5.9-orange)
@@ -10,7 +10,9 @@
 
 ## 特性
 
+- 🤖 **像素机器人形象** — Clawd 像素风格机器人，每种状态独特表情 + 身体特效
 - 🎨 **12 种状态动画** — 每种 Claude 行为对应独特的颜色、表情和特效
+- 🔍 **细粒度状态识别** — 解析 JSONL 对话日志，区分写代码/编译/测试/搜索/安装等具体行为
 - 🔔 **权限审批气泡** — Claude 需要权限时桌宠弹出 Allow/Deny 按钮
 - 🖱️ **拖拽定位** — 随意拖到屏幕任何位置，重启后自动恢复
 - 💤 **自适应帧率** — 空闲时几乎不耗 CPU，活跃时流畅动画
@@ -21,18 +23,18 @@
 
 | Claude 行为 | 颜色 | 表情 | 特效 |
 |-------------|------|------|------|
-| 无会话 (sleeping) | 灰色 | 闭眼 + 横线嘴 | Zzz 上浮 |
-| 空闲 (idle) | 蓝色 | 圆眼 + 微笑弧 | 静止 |
-| 思考 (thinking) | 橘黄 | 上看 + 短横嘴 | 身体微倾 |
-| 写代码 (typing) | 绿色 | 眯眼 + 方块嘴 | 涟漪扩散 |
-| 编译 (building) | 橙色 | 圆眼 + 微笑 | 齿轮旋转 |
-| 测试 (testing) | 青色 | 圆眼 + 微笑 | 扫描线 |
+| 无会话 (sleeping) | 冷灰 | 闭眼横线 | Zzz 上浮 |
+| 空闲 (idle) | 天蓝 | 圆眼 + 微笑 | 静止 |
+| 思考 (thinking) | 琥珀橘黄 | 上看 + 短横嘴 | 身体微倾 |
+| 写代码 (typing) | 翠绿 | 眯眼 + 方块嘴 | 涟漪扩散 |
+| 编译 (building) | 珊瑚橙红 | 圆眼 + 微笑 | 齿轮旋转 |
+| 测试 (testing) | 青碧 | 圆眼 + 微笑 | 扫描线 |
 | 搜索 (searching) | 靛蓝 | 放大镜眼 | 雷达扫描 |
-| 安装 (installing) | 橙色 | 圆眼 + 微笑 | 进度环 |
-| 子代理 (subAgent) | 薄荷 | 圆眼 + 微笑 | 迷你分身环绕 |
-| 完成 (celebrate) | 黄色 | ^_^ 笑脸 | 弹跳 + 彩色烟花 |
-| 出错 (error) | 红色 | ×_× 难过 | 摇晃 + 裂纹 |
-| 需要审批 (attention) | 红色 | 大眼 + ! | 脉冲红圈 |
+| 安装 (installing) | 紫罗兰 | 圆眼 + 微笑 | 进度环 |
+| 子代理 (subAgent) | 薄荷绿 | 圆眼 + 微笑 | 迷你分身环绕 |
+| 完成 (celebrate) | 金黄 | ^_^ 笑脸 | 弹跳 + 彩色烟花 |
+| 出错 (error) | 正红 | ×_× 难过 | 摇晃 + 裂纹 |
+| 需要审批 (attention) | 警示红 | 大眼 + ! | 脉冲红圈 |
 
 ## 安装与运行
 
@@ -94,6 +96,9 @@ chmod +x ~/.claude/clawdondesk/hooks/on-permission-request.sh
 Claude Code CLI
     │
     ├── 写入 ~/.claude/sessions/<pid>.json（状态：busy/idle）
+    │   └── busy 时读取 JSONL 对话日志尾部，根据最近 tool_use 推断细粒度状态
+    │       Write/Edit→typing, Bash+build→building, Bash+test→testing,
+    │       Bash+install→installing, Read/Grep→searching, Agent→subAgent
     │
     └── PermissionRequest hook 触发
             │
@@ -102,7 +107,8 @@ Claude Code CLI
                     ▼
             ClawdOnDesk（轮询监控）
                     │
-                    ├── 读取 session 文件 → 映射为 12 种宠物状态
+                    ├── 读取 session 文件 + 解析 JSONL → 映射为 12 种宠物状态
+                    │   busy→idle 转换时自动触发 celebrate 状态 3 秒
                     │
                     └── 检测权限请求 → 弹出审批气泡
                             │
@@ -134,15 +140,15 @@ Sources/
 
 ## 技术细节
 
+- **宠物形象**：像素风格机器人 Clawd，用 SwiftUI Canvas 逐像素绘制，9×3 字符网格，18×6 子像素精度
 - **窗口**：NSWindow borderless + transparent + floating + isMovableByWindowBackground
 - **动画**：Timer 逐帧驱动，RunLoop .common mode（确保失焦时仍运行）
 - **帧率**：sleeping 1.0s/帧，idle 0.6s，typing 0.12s — 按需分配 CPU
-- **监控**：DispatchSource 文件系统事件 + 定时轮询双保险
+- **状态检测**：DispatchSource 文件系统事件 + 定时轮询；解析 JSONL 日志尾部 8KB 推断细粒度状态
 - **IPC**：基于文件的进程间通信（JSON 读写），简单可靠
 
 ## 已知限制
 
-- Claude Code 的 session 文件目前只有 `busy`/`idle` 两种状态，更细粒度的状态（thinking/typing/building）需要 Claude Code 后续支持
 - 权限审批是通知型的（PermissionRequest hook），不阻塞 Claude Code 执行流
 
 ## License
