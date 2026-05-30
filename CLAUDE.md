@@ -37,7 +37,7 @@ Sources/
 - 极简圆点（40×40 Circle）+ 白色眼睛 + 白色嘴巴 + 状态特效
 - 每个状态有独特表情：sleeping 闭眼横线、thinking 上看+短横、error ×眼+︵、celebrate ^眼+◡、attention 大眼+!、typing 眯眼+方块、searching 放大镜眼
 - 状态特效：typing 涟漪、building 齿轮旋转、searching 雷达扫描、installing 进度环、subAgent 迷你分身环绕、testing 扫描线、sleeping Zzz 上浮、attention 脉冲红圈、celebrate 彩色烟花、error 摇晃+裂纹
-- 颜色映射：sleeping=gray, idle=blue, thinking=orange, typing=green, building/installing=orange, testing=cyan, error/attention=red, celebrate=yellow, searching=indigo, subAgent=mint
+- 颜色映射：sleeping=冷灰, idle=天蓝, thinking=琥珀橘黄, typing=翠绿, building=珊瑚橙红, installing=紫罗兰, testing=青碧, error=正红, attention=警示红, celebrate=金黄, searching=靛蓝, subAgent=薄荷绿（12种状态各自独立配色）
 - idle 状态静止不动，thinking 无外围粒子（仅身体微倾）
 
 ### ClaudeCodeMonitor

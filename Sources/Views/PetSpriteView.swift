@@ -162,7 +162,7 @@ struct MinimalSprite: View {
             // Radar sweep arc
             Circle()
                 .trim(from: 0, to: 0.25)
-                .stroke(Color.indigo.opacity(0.3), lineWidth: 2)
+                .stroke(Color(red: 0.3, green: 0.3, blue: 0.85).opacity(0.4), lineWidth: 2)
                 .frame(width: 55, height: 55)
                 .rotationEffect(.degrees(Double(frame) * 90))
 
@@ -170,7 +170,7 @@ struct MinimalSprite: View {
             // Rotating gear segments
             ForEach(0..<6, id: \.self) { i in
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(Color.orange.opacity(0.3))
+                    .fill(Color(red: 0.9, green: 0.4, blue: 0.2).opacity(0.4))
                     .frame(width: 3, height: 8)
                     .offset(y: -28)
                     .rotationEffect(.degrees(Double(i) * 60 + Double(frame) * 15))
@@ -180,7 +180,7 @@ struct MinimalSprite: View {
             // Progress ring
             Circle()
                 .trim(from: 0, to: progressAmount)
-                .stroke(Color.orange.opacity(0.6), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .stroke(Color(red: 0.6, green: 0.35, blue: 0.9).opacity(0.7), style: StrokeStyle(lineWidth: 3, lineCap: .round))
                 .frame(width: 52, height: 52)
                 .rotationEffect(.degrees(-90))
 
@@ -188,7 +188,7 @@ struct MinimalSprite: View {
             // Orbiting mini clones
             ForEach(0..<3, id: \.self) { i in
                 Circle()
-                    .fill(Color.mint.opacity(0.6))
+                    .fill(Color(red: 0.3, green: 0.85, blue: 0.7).opacity(0.6))
                     .frame(width: 8, height: 8)
                     .overlay(
                         HStack(spacing: 2) {
@@ -202,7 +202,7 @@ struct MinimalSprite: View {
         case .testing:
             // Scanning line
             RoundedRectangle(cornerRadius: 1)
-                .fill(Color.cyan.opacity(0.4))
+                .fill(Color(red: 0.1, green: 0.8, blue: 0.75).opacity(0.5))
                 .frame(width: 50, height: 2)
                 .offset(y: scanLineY)
 
@@ -235,7 +235,7 @@ struct MinimalSprite: View {
             // Keystroke ripples
             ForEach(0..<2, id: \.self) { i in
                 Circle()
-                    .stroke(Color.green.opacity(rippleOpacity(index: i)), lineWidth: 1)
+                    .stroke(Color(red: 0.2, green: 0.8, blue: 0.4).opacity(rippleOpacity(index: i)), lineWidth: 1)
                     .frame(width: rippleSize(index: i), height: rippleSize(index: i))
                     .offset(y: 5)
             }
@@ -428,17 +428,18 @@ struct MinimalSprite: View {
 
     private var colorForState: Color {
         switch state {
-        case .sleeping: return .gray
-        case .idle: return .blue.opacity(0.6)
-        case .thinking: return .orange
-        case .typing: return .green
-        case .building, .installing: return .orange
-        case .testing: return .cyan
-        case .error: return .red
-        case .celebrate: return .yellow
-        case .attention: return .red
-        case .searching: return .indigo
-        case .subAgent: return .mint
+        case .sleeping: return Color(red: 0.55, green: 0.55, blue: 0.6)   // 冷灰
+        case .idle: return Color(red: 0.3, green: 0.5, blue: 0.9)          // 天蓝
+        case .thinking: return Color(red: 0.95, green: 0.65, blue: 0.15)   // 琥珀橘黄
+        case .typing: return Color(red: 0.2, green: 0.8, blue: 0.4)        // 翠绿
+        case .building: return Color(red: 0.9, green: 0.4, blue: 0.2)      // 珊瑚橙红
+        case .installing: return Color(red: 0.6, green: 0.35, blue: 0.9)   // 紫罗兰
+        case .testing: return Color(red: 0.1, green: 0.8, blue: 0.75)      // 青碧
+        case .error: return Color(red: 0.9, green: 0.2, blue: 0.25)        // 正红
+        case .celebrate: return Color(red: 1.0, green: 0.85, blue: 0.1)    // 明亮金黄
+        case .attention: return Color(red: 0.95, green: 0.2, blue: 0.3)    // 警示红
+        case .searching: return Color(red: 0.3, green: 0.3, blue: 0.85)    // 靛蓝
+        case .subAgent: return Color(red: 0.3, green: 0.85, blue: 0.7)     // 薄荷绿
         }
     }
 }
