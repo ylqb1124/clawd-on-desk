@@ -234,20 +234,19 @@ struct ClawdSprite: View {
         }
     }
     private var bodyOffsetX: CGFloat {
-        guard state == .error else { return 0 }
-        let s = frame % 3
-        return s == 0 ? -5 : s == 1 ? 5 : 0
+        switch state {
+        case .error:
+            let s = frame % 3
+            return s == 0 ? -5 : s == 1 ? 5 : 0
+        case .thinking:
+            return sinVal(Double(frame) * .pi / 3) * 3
+        default: return 0
+        }
     }
     private var bodyOffsetY: CGFloat {
         state == .celebrate ? -abs(sinVal(Double(frame) * .pi / 4)) * 8 : 0
     }
-    private var bodyRotation: Angle {
-        switch state {
-        case .thinking:
-            return .degrees(Double(sinVal(Double(frame) * .pi / 3) * 3))
-        default: return .degrees(0)
-        }
-    }
+    private var bodyRotation: Angle { .degrees(0) }
     private var shadowColor: Color {
         state.isUrgent ? .red.opacity(0.6) : colorForState.opacity(0.3)
     }
