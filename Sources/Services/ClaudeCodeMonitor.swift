@@ -33,12 +33,14 @@ class ClaudeCodeMonitor: ObservableObject {
         // Ensure IPC directory exists
         try? FileManager.default.createDirectory(at: ipcDirectory, withIntermediateDirectories: true)
 
-        // Poll for session changes every 2 seconds
-        pollTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        // Poll for session changes every 2 seconds (.common mode so it fires during menus/modals)
+        let sessionTimer = Timer(timeInterval: 2.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.pollSessions()
             }
         }
+        RunLoop.main.add(sessionTimer, forMode: .common)
+        pollTimer = sessionTimer
         // Initial poll
         pollSessions()
 

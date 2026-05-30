@@ -2,7 +2,6 @@ import AppKit
 import SwiftUI
 
 class PetWindowController: NSWindowController {
-    private let petViewModel = PetViewModel()
 
     private static let positionXKey = "ClawdOnDesk.windowPositionX"
     private static let positionYKey = "ClawdOnDesk.windowPositionY"

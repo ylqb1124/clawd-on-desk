@@ -25,7 +25,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         petWindowController?.showWindow(nil)
 
         // Initialize status bar
-        statusBarController = StatusBarController(petWindowController: petWindowController!)
+        if let controller = petWindowController {
+            statusBarController = StatusBarController(petWindowController: controller)
+        }
 
         // Start Claude Code monitor
         ClaudeCodeMonitor.shared.startMonitoring()
