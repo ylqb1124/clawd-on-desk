@@ -80,10 +80,17 @@ class StatusBarController {
     }
 
     @objc private func demoAllStates() {
-        let states: [PetState] = [.idle, .thinking, .typing, .building, .testing, .installing, .searching, .subAgent, .celebrate, .error, .attention, .sleeping]
-        for (i, state) in states.enumerated() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 2.5) {
-                PetViewModel.shared.transitionTo(state)
+        Task { @MainActor in
+            let states: [PetState] = [.idle, .thinking, .typing, .building, .testing, .installing, .searching, .subAgent, .celebrate, .error, .attention, .sleeping]
+            let vm = PetViewModel.shared
+            vm.isDemoMode = true
+            for (i, state) in states.enumerated() {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 5.0) {
+                    vm.transitionTo(state)
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(states.count) * 5.0) {
+                vm.isDemoMode = false
             }
         }
     }

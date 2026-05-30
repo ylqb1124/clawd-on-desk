@@ -15,6 +15,9 @@ class PetViewModel: ObservableObject {
     @Published var showDashboard: Bool = false
     @Published var totalTokens: Int = 0
 
+    // MARK: - Demo
+    var isDemoMode: Bool = false
+
     // MARK: - Animation
     private var animationTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -69,6 +72,7 @@ class PetViewModel: ObservableObject {
     }
 
     private func recalculateState() {
+        guard !isDemoMode else { return }
         // Priority: attention > error > active states > idle > sleeping
         if sessions.contains(where: { $0.state == .attention }) {
             transitionTo(.attention)
