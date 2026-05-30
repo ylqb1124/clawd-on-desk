@@ -59,8 +59,6 @@ struct ClawdSprite: View {
         return pixels
     }()
 
-    @State private var thinkingRotation: Double = 0
-
     private static let eyePositions: [(Int, Int)] = [(5,1), (12,1)]
 
     private func eyePositions(for state: PetState, frame: Int) -> [(Int, Int)] {
@@ -82,26 +80,8 @@ struct ClawdSprite: View {
             bodyCanvas
                 .scaleEffect(bodyScale)
                 .offset(x: bodyOffsetX, y: bodyOffsetY)
-                .rotationEffect(.degrees(state == .thinking ? thinkingRotation : 0))
                 .shadow(color: shadowColor, radius: shadowRadius)
             foregroundEffect
-        }
-        .onAppear {
-            if state == .thinking { startThinkingRotation() }
-        }
-        .onChange(of: state) { newState in
-            if newState == .thinking {
-                startThinkingRotation()
-            } else {
-                thinkingRotation = 0
-            }
-        }
-    }
-
-    private func startThinkingRotation() {
-        thinkingRotation = 0
-        withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
-            thinkingRotation = 360
         }
     }
 
@@ -276,7 +256,7 @@ struct ClawdSprite: View {
         switch state {
         case .sleeping:   return Color(red: 0.55, green: 0.55, blue: 0.6)
         case .idle:       return Color(red: 0.9,  green: 0.4,  blue: 0.2)
-        case .thinking:   return Color(red: 0.95, green: 0.65, blue: 0.15)
+        case .thinking:   return Color(red: 0.6,  green: 0.3,  blue: 0.9)
         case .typing:     return Color(red: 0.2,  green: 0.8,  blue: 0.4)
         case .building:   return Color(red: 0.4,  green: 0.65, blue: 0.95)
         case .installing: return Color(red: 0.6,  green: 0.35, blue: 0.9)
